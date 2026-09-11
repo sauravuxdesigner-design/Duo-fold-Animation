@@ -1,49 +1,32 @@
 import SwiftUI
-import PhotosUI // Native Apple Framework for secure photo gallery access
 
 struct DemoContentView: View {
-    // Gallery selection state parameters variables
-    @State private var selectedItem: PhotosPickerItem? = nil
-    @State private var selectedImage: UIImage? = nil
-    
-    private let columns = [GridItem(.flexible(), spacing: 12), GridItem(.flexible(), spacing: 12)]
-
     var body: some View {
         ZStack {
-            // LAYER 1: BASE SYSTEM BACKGROUND
-            Color(red: 0.05, green: 0.05, blue: 0.07)
+            // 1. BASE BACKGROUND & FIGMA GRADIENT BLOB VECTORS
+            Color(red: 0.94, green: 0.94, blue: 0.96)
                 .ignoresSafeArea()
             
-            // LAYER 2: CONDITIONAL WALLPAPER STATE (Displays your custom gallery pick or falls back to your Figma gradients)
             GeometryReader { geo in
-                if let uiImage = selectedImage {
-                    // Custom User Photo from Gallery
-                    Image(uiImage: uiImage)
-                        .resizable()
-                        .aspectRatio(contentMode: .fill)
-                        .frame(width: geo.size.width, height: geo.size.height)
-                        .clipped()
-                } else {
-                    // Default Figma Vector Gradient Wallpaper Module
-                    ZStack {
-                        Circle()
-                            .fill(Color(red: 0.0, green: 0.15, blue: 0.17))
-                            .frame(width: geo.size.width * 1.1, height: geo.size.height * 0.45)
-                            .blur(radius: 75)
-                            .offset(x: -geo.size.width * 0.25, y: geo.size.height * 0.18)
-                        
-                        Circle()
-                            .fill(Color(red: 1.0, green: 0.09, blue: 0.3))
-                            .frame(width: geo.size.width * 1.1, height: geo.size.height * 0.45)
-                            .blur(radius: 75)
-                            .offset(x: geo.size.width * 0.25, y: geo.size.height * 0.25)
-                    }
-                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
+                ZStack {
+                    // Vector 14: Dark Teal/Cyan Blur Module
+                    Circle()
+                        .fill(Color(red: 0.0, green: 0.15, blue: 0.17))
+                        .frame(width: geo.size.width * 0.95, height: geo.size.height * 0.4)
+                        .blur(radius: 67)
+                        .offset(x: -geo.size.width * 0.22, y: geo.size.height * 0.22)
+                    
+                    // Vector 13: Hot Pink/Crimson Blur Module
+                    Circle()
+                        .fill(Color(red: 1.0, green: 0.09, blue: 0.3))
+                        .frame(width: geo.size.width * 0.95, height: geo.size.height * 0.4)
+                        .blur(radius: 67)
+                        .offset(x: geo.size.width * 0.22, y: geo.size.height * 0.28)
                 }
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
             }
-            .ignoresSafeArea()
             
-            // LAYER 3: GRAIN NOISE STIPPLE OVERLAY
+            // 2. ATTACHED GRAIN NOISE TEXTURE OVERLAY
             GeometryReader { geometry in
                 AsyncImage(url: URL(string: "https://kommodo.ai")) { phase in
                     switch phase {
@@ -52,8 +35,8 @@ struct DemoContentView: View {
                             .resizable()
                             .aspectRatio(contentMode: .fill)
                             .frame(width: geometry.size.width, height: geometry.size.height)
-                            .opacity(0.25)
-                            .blendMode(.screen)
+                            .opacity(0.45) // Subtle grain blend overlay matching your image asset
+                            .blendMode(.multiply)
                     default:
                         Color.clear
                     }
@@ -61,143 +44,155 @@ struct DemoContentView: View {
             }
             .ignoresSafeArea()
 
-            // LAYER 4: NATIVE FOREGROUND iOS SYSTEM INTERFACE 
+            // 3. NATIVE iOS SYSTEM GRID INTERFACE
             VStack(spacing: 0) {
                 
-                // APPLE STATUS BAR CUTOUT
+                // APPLE iOS STATUS BAR
                 HStack {
                     Text("9:41")
-                        .font(.system(size: 15, weight: .semibold))
-                        .foregroundColor(.white)
-                        .frame(width: 60, alignment: .leading)
+                        .font(.system(size: 15, weight: .semibold, design: .default))
+                        .foregroundColor(Color(red: 0.1, green: 0.1, blue: 0.1))
                     Spacer()
-                    Spacer().frame(width: 110) // Space reserved for hardware Dynamic Island Cutout
-                    Spacer()
-                    HStack(spacing: 6) {
+                    HStack(spacing: 5) {
                         Image(systemName: "cellularbars")
                         Image(systemName: "wifi")
                         Image(systemName: "battery.100")
                     }
-                    .font(.system(size: 12, weight: .semibold))
-                    .foregroundColor(.white)
-                    .frame(width: 60, alignment: .trailing)
+                    .font(.system(size: 13, weight: .medium))
+                    .foregroundColor(Color(red: 0.1, green: 0.1, blue: 0.1))
                 }
-                .padding(.horizontal, 24)
-                .padding(.top, 16)
+                .padding(.horizontal, 32)
+                .padding(.top, 14)
                 
-                // MAIN SYSTEM WORKSPACE PANEL
+                // HOME SCREEN MAIN GRID WORKSPACE
                 VStack(spacing: 28) {
                     
-                    // CALL-TO-ACTION SYSTEM WIDGET (PhotosPicker Integration Engine)
-                    PhotosPicker(selection: $selectedItem, matching: .images, photoLibrary: .shared()) {
-                        HStack(spacing: 16) {
-                            VStack(alignment: .leading, spacing: 4) {
-                                Text("CUSTOM IMAGE ENGINE")
-                                    .font(.system(size: 10, weight: .bold))
-                                    .foregroundColor(.white.opacity(0.6))
-                                Text(selectedImage == nil ? "Tap to Add Photo" : "Change Wallpaper")
-                                    .font(.system(size: 17, weight: .bold))
-                                    .foregroundColor(.white)
-                                Text("Select any image file from your device gallery canvas to test texture layering.")
-                                    .font(.system(size: 12, weight: .medium))
-                                    .foregroundColor(.white.opacity(0.7))
-                                    .multilineTextAlignment(.leading)
-                                    .lineLimit(2)
-                            }
+                    // NATIVE 2x4 LARGE SYSTEM WIDGET (Media / Music Player Style)
+                    HStack(spacing: 16) {
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text("NOW PLAYING")
+                                .font(.system(size: 10, weight: .bold))
+                                .foregroundColor(.secondary)
+                            Text("FloSpace Canvas")
+                                .font(.system(size: 16, weight: .bold))
+                                .foregroundColor(Color(red: 0.15, green: 0.15, blue: 0.15))
+                            Text("Design System Sync")
+                                .font(.system(size: 13, weight: .medium))
+                                .foregroundColor(.secondary)
                             Spacer()
-                            
-                            // Interactive Vector Trigger Icon Button
-                            ZStack {
-                                RoundedRectangle(cornerRadius: 16, style: .continuous)
-                                    .fill(LinearGradient(colors: [.purple, .pink], startPoint: .top, endPoint: .bottom))
-                                    .frame(width: 56, height: 56)
-                                
-                                Image(systemName: selectedImage == nil ? "photo.on.rectangle.angled" : "arrow.triangle.2.circlepath")
-                                    .foregroundColor(.white)
-                                    .font(.title3)
+                            HStack(spacing: 14) {
+                                Image(systemName: "backward.fill")
+                                Image(systemName: "play.fill").font(.system(size: 18))
+                                Image(systemName: "forward.fill")
                             }
+                            .foregroundColor(Color(red: 0.15, green: 0.15, blue: 0.15))
                         }
-                        .padding(16)
-                        .frame(maxWidth: .infinity)
-                        .background(Color.white.opacity(0.12))
-                        .cornerRadius(24, style: .continuous)
-                        .overlay(RoundedRectangle(cornerRadius: 24, style: .continuous).stroke(Color.white.opacity(0.08), lineWidth: 0.5))
+                        Spacer()
+                        
+                        // Album Art Vector Container with Soft Vignette
+                        RoundedRectangle(cornerRadius: 16, style: .continuous)
+                            .fill(LinearGradient(colors: [.purple, .indigo], startPoint: .top, endPoint: .bottom))
+                            .frame(width: 64, height: 64)
+                            .overlay(Image(systemName: "music.note").foregroundColor(.white).font(.title3))
+                            .shadow(color: Color.purple.opacity(0.15), radius: 6, x: 0, y: 3)
                     }
-                    .buttonStyle(.plain) // Preserves the exact custom design formatting colors
+                    .padding(16)
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 140)
+                    .background(Color.white.opacity(0.45)) // Frosted translucent canvas core
+                    .cornerRadius(24, style: .continuous) // Squircle corner profile
+                    .shadow(color: Color.black.opacity(0.03), radius: 10, x: 0, y: 4)
                     
-                    // APP SYMBOL ICON GRID SQUIRCLES
-                    VStack(spacing: 26) {
-                        HStack(spacing: 24) {
-                            ProIconTile(name: "Messages", symbol: "message.fill", color: .green)
-                            ProIconTile(name: "Photos", symbol: "photo.on.rectangle.angled", color: .blue)
-                            ProIconTile(name: "Figma", symbol: "pencil.tip.crop.circle", color: .purple)
-                            ProIconTile(name: "Safari", symbol: "compass.drawing", color: .cyan)
+                    // APP INTERFACE VECTOR GRID (60x60 Standard Squircles)
+                    VStack(spacing: 24) {
+                        // ROW 1
+                        HStack(spacing: 26) {
+                            IOSIconComponent(name: "Messages", symbol: "message.fill", themeColor: .green)
+                            IOSIconComponent(name: "Photos", symbol: "photo.on.rectangle.angled", themeColor: .blue)
+                            IOSIconComponent(name: "Figma", symbol: "pencil.tip.crop.circle", themeColor: .purple)
+                            IOSIconComponent(name: "Safari", symbol: "compass.drawing", themeColor: .cyan)
                         }
-                        HStack(spacing: 24) {
-                            ProIconTile(name: "Maps", symbol: "map.fill", color: .orange)
-                            ProIconTile(name: "Files", symbol: "folder.fill", color: .blue)
-                            ProIconTile(name: "Settings", symbol: "gearshape.fill", color: .gray)
-                            ProIconTile(name: "App Store", symbol: "a.square.fill", color: .indigo)
+                        
+                        // ROW 2
+                        HStack(spacing: 26) {
+                            IOSIconComponent(name: "Maps", symbol: "map.fill", themeColor: .orange)
+                            IOSIconComponent(name: "Files", symbol: "folder.fill", themeColor: .blue)
+                            IOSIconComponent(name: "Settings", symbol: "gearshape.fill", themeColor: .gray)
+                            IOSIconComponent(name: "App Store", symbol: "a.square.fill", themeColor: .blue)
                         }
                     }
-                }
-                .padding(.horizontal, 20)
-                .padding(.top, 36)
-                
-                Spacer()
-                
-                // BOTTOM GLASS DOCK BLOCK
-                HStack(spacing: 24) {
-                    ProDockTile(symbol: "phone.fill", color: .green)
-                    ProDockTile(symbol: "envelope.fill", color: .blue)
-                    ProDockTile(symbol: "safari.fill", color: .cyan)
-                    ProDockTile(symbol: "music.note", color: .pink)
+                    .padding(.horizontal, 4)
                 }
                 .padding(.horizontal, 24)
-                .padding(.vertical, 16)
-                .frame(maxWidth: .infinity)
-                .background(RoundedRectangle(cornerRadius: 36, style: .continuous).fill(Color.white.opacity(0.14)))
-                .overlay(RoundedRectangle(cornerRadius: 36, style: .continuous).stroke(Color.white.opacity(0.08), lineWidth: 0.5))
-                .padding(.horizontal, 16)
-                .padding(.bottom, 24)
-            }
-        }
-        // Asynchronous listener task loads chosen gallery files data into memory safely
-        .onChange(of: selectedItem) { newItem in
-            Task {
-                if let data = try? await newItem?.loadTransferable(type: Data.self),
-                   let uiImage = UIImage(data: data) {
-                    await MainActor.run {
-                        self.selectedImage = uiImage
-                    }
+                .padding(.top, 32)
+                
+                Spacer() // Pushes the dock block to the lower device boundaries smoothly
+                
+                // APPLE BOTTOM BLURRED APP DOCK ROW REPLICA (Ultra-Thin Material Blur Look)
+                HStack(spacing: 26) {
+                    DockIconComponent(symbol: "phone.fill", themeColor: .green)
+                    DockIconComponent(symbol: "envelope.fill", themeColor: .blue)
+                    DockIconComponent(symbol: "safari.fill", themeColor: .cyan)
+                    DockIconComponent(symbol: "music.note", themeColor: .pink)
                 }
+                .padding(.horizontal, 24)
+                .padding(.vertical, 18)
+                .frame(maxWidth: .infinity)
+                .background(RoundedRectangle(cornerRadius: 36, style: .continuous).fill(Color.white.opacity(0.35)))
+                .padding(.horizontal, 20)
+                .padding(.bottom, 24)
+                .shadow(color: Color.black.opacity(0.04), radius: 20, x: 0, y: 8)
             }
         }
     }
 }
 
-struct ProIconTile: View {
+// Custom App Icon Squircles
+struct IOSIconComponent: View {
     let name: String
     let symbol: String
-    let color: Color
+    let themeColor: Color
+    
     var body: some View {
         VStack(spacing: 6) {
             ZStack {
                 RoundedRectangle(cornerRadius: 15, style: .continuous)
-                    .fill(Color(red: 0.15, green: 0.15, blue: 0.18))
-                    .frame(width: 62, height: 62)
-                    .overlay(RoundedRectangle(cornerRadius: 15, style: .continuous).stroke(Color.white.opacity(0.06), lineWidth: 0.5))
-                Image(systemName: symbol).font(.system(size: 26, weight: .medium)).foregroundStyle(color.gradient)
+                    .fill(themeColor.gradient)
+                    .frame(width: 60, height: 60)
+                    .shadow(color: Color.black.opacity(0.04), radius: 5, x: 0, y: 3)
+                
+                Image(systemName: symbol)
+                    .font(.system(size: 26, weight: .medium))
+                    .foregroundColor(.white)
             }
-            Text(name).font(.system(size: 11, weight: .medium)).foregroundColor(.white.opacity(0.8)).lineLimit(1)
+            Text(name)
+                .font(.system(size: 11, weight: .medium))
+                .foregroundColor(Color(red: 0.12, green: 0.12, blue: 0.12))
+                .lineLimit(1)
         }
         .frame(maxWidth: .infinity)
     }
 }
 
-struct ProDockTile: View {
+// Custom Dock Icon Component
+struct DockIconComponent: View {
     let symbol: String
-    let color: Color
+    let themeColor: Color
+    
     var body: some View {
         ZStack {
             RoundedRectangle(cornerRadius: 15, style: .continuous)
+                .fill(themeColor.gradient)
+                .frame(width: 60, height: 60)
+            
+            Image(systemName: symbol)
+                .font(.system(size: 26, weight: .medium))
+                .foregroundColor(.white)
+        }
+        .frame(maxWidth: .infinity)
+    }
+}
+
+#Preview {
+    DemoContentView()
+}
