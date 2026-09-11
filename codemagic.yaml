@@ -1,28 +1,42 @@
-scripts:
-  - name: Preload Metal Toolchain Components
-    script: xcodebuild -downloadComponent MetalToolchain
+workflows:
+  ios-device-build:
+    name: iOS Device Build
+    max_build_duration: 30
+    instance_type: mac_mini_m2
+    environment:
+      xcode: latest
+      cocoapods: default
+    scripts:
+      - name: Preload Metal Toolchain Components
+        script: |
+          xcodebuild -downloadComponent MetalToolchain
 
-  - name: Build and Package App
-    script: |
-      set -euo pipefail   # ← fail loudly instead of shipping empty artifacts
+      - name: Build and Package App
+        script: |
+          set -euo pipefail
 
-      xcodebuild build \
-        -project DuoLikeAnimation.xcodeproj \
-        -scheme DuoLikeAnimation \
-        -destination 'generic/platform=iOS' \
-        -configuration Debug \
-        CODE_SIGNING_ALLOWED=NO \
-        CODE_SIGN_IDENTITY="" \
-        CODE_SIGNING_REQUIRED=NO \
-        PROVISIONING_PROFILE_REQUIRED=NO \
-        BUILD_DIR=$CM_BUILD_DIR/build
+          xcodebuild build \
+            -project DuoLikeAnimation.xcodeproj \
+            -scheme DuoLikeAnimation \
+            -destination 'generic/platform=iOS' \
+            -configuration Debug \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGNING_REQUIRED=NO \
+            PROVISIONING_PROFILE_REQUIRED=NO \
+            BUILD_DIR=$CM_BUILD_DIR/build
 
-      APP_PATH="$CM_BUILD_DIR/build/Debug-iphoneos/DuoLikeAnimation.app"
-      test -d "$APP_PATH" || { echo "Build produced no .app — aborting"; exit 1; }
+          APP_PATH="$CM_BUILD_DIR/build/Debug-iphoneos/DuoLikeAnimation.app"
+          test -d "$APP_PATH" || { echo "ERROR: Build produced no .app at $APP_PATH"; exit 1; }
 
-      rm -rf $CM_BUILD_DIR/Payload
-      mkdir -p $CM_BUILD_DIR/Payload
-      cp -r "$APP_PATH" $CM_BUILD_DIR/Payload/
+          rm -rf $CM_BUILD_DIR/Payload
+          mkdir -p $CM_BUILD_DIR/Payload
+          cp -r "$APP_PATH" $CM_BUILD_DIR/Payload/
 
-      cd $CM_BUILD_DIR
-      zip -r DuoLikeAnimation.ipa Payload
+          cd $CM_BUILD_DIR
+          zip -r DuoLikeAnimation.ipa Payload
+
+          echo "Final IPA size:"
+          ls -la $CM_BUILD_DIR/DuoLikeAnimation.ipa
+    artifacts:
+      - $CM_BUILD_DIR/DuoLikeAnimation.ipa
