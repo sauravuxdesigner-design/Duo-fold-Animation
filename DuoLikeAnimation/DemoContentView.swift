@@ -101,7 +101,7 @@ struct DemoContentView: View {
                     .frame(maxWidth: .infinity)
                     .frame(height: 140)
                     .background(Color.white.opacity(0.12)) // Elegant dark translucent sheet
-                    .cornerRadius(24, style: .continuous)
+                    .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
                     .overlay(RoundedRectangle(cornerRadius: 24, style: .continuous).stroke(Color.white.opacity(0.08), lineWidth: 0.5))
                     
                     // APP SYMBOL GRID SHORTCUT MODULES
