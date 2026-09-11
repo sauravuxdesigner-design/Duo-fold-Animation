@@ -3,28 +3,31 @@ import SwiftUI
 struct DemoContentView: View {
     var body: some View {
         ZStack {
-            // 1. BASE BACKGROUND CARD CANVAS
+            // 1. BASE BACKGROUND CANVASES (Adapts dynamically to full screen edges)
             Color(red: 0.96, green: 0.96, blue: 0.96)
+                .ignoresSafeArea()
             
-            // 2. BOTTOM FIGMA GRADIENT BLOBS LAYER (Vector 13 & 14)
-            ZStack {
-                // Vector 14: Dark Teal/Cyan Blob
-                Ellipse()
-                    .fill(Color(red: 0.0, green: 0.15, blue: 0.17))
-                    .frame(width: 361, height: 276)
-                    .blur(radius: 67)
-                    .offset(x: -80, y: 250)
-                
-                // Vector 13: Hot Pink/Crimson Blob
-                Ellipse()
-                    .fill(Color(red: 1.0, green: 0.09, blue: 0.3))
-                    .frame(width: 361, height: 276)
-                    .blur(radius: 67)
-                    .offset(x: 80, y: 310)
+            // 2. RESPONSIVE FIGMA GRADIENT BLOB VECTORS (Scales relative to screen boundaries)
+            GeometryReader { geo in
+                ZStack {
+                    // Vector 14: Dark Teal/Cyan Blur Module
+                    Circle()
+                        .fill(Color(red: 0.0, green: 0.15, blue: 0.17))
+                        .frame(width: geo.size.width * 0.85, height: geo.size.height * 0.35)
+                        .blur(radius: 67)
+                        .offset(x: -geo.size.width * 0.2, y: geo.size.height * 0.25)
+                    
+                    // Vector 13: Hot Pink/Crimson Blur Module
+                    Circle()
+                        .fill(Color(red: 1.0, green: 0.09, blue: 0.3))
+                        .frame(width: geo.size.width * 0.85, height: geo.size.height * 0.35)
+                        .blur(radius: 67)
+                        .offset(x: geo.size.width * 0.2, y: geo.size.height * 0.32)
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
             
-            // 3. YOUR TEXTURE IMAGE OVERLAY (Loaded directly from web)
+            // 3. GRAIN TEXTURE BLEND (Fills screen without distorting grain detail)
             GeometryReader { geometry in
                 AsyncImage(url: URL(string: "https://kommodo.ai")) { phase in
                     switch phase {
@@ -33,7 +36,7 @@ struct DemoContentView: View {
                             .resizable()
                             .aspectRatio(contentMode: .fill)
                             .frame(width: geometry.size.width, height: geometry.size.height)
-                            .opacity(0.15) // Subtle blend for the grain texture
+                            .opacity(0.65)
                             .blendMode(.multiply)
                     default:
                         Color.clear
@@ -42,12 +45,12 @@ struct DemoContentView: View {
             }
             .ignoresSafeArea()
 
-            // 4. FOREGROUND INTERFACE SCENE VECTORS
+            // 4. FOREGROUND LAYER CONTAINER (Strictly responsive layout structure)
             VStack(spacing: 0) {
-                // Top Header Panel
+                // Top Header Block
                 HStack(alignment: .center) {
                     Text("FloSpace")
-                        .font(.system(size: 26, weight: .bold, design: .rounded))
+                        .font(.system(size: 24, weight: .bold, design: .default))
                         .foregroundColor(Color(red: 0.18, green: 0.18, blue: 0.18))
                     
                     Spacer()
@@ -64,17 +67,17 @@ struct DemoContentView: View {
                     .cornerRadius(8)
                     .shadow(color: Color.black.opacity(0.04), radius: 4, x: 0, y: 2)
                 }
-                .padding(.horizontal, 32)
-                .padding(.top, 44)
+                .padding(.horizontal, 24)
+                .padding(.top, 16)
                 
-                Spacer()
+                Spacer() // Pushes content apart fluidly based on display height
                 
-                // Central Canvas Text & Graphic Cluster
-                VStack(spacing: 20) {
-                    // Modern App Workspace Vector Branding Frame
+                // Central Text & Graphic Cluster
+                VStack(spacing: 24) {
+                    // Custom App Branding Core Module (64x64)
                     ZStack {
                         RoundedRectangle(cornerRadius: 18)
-                            .fill(Color.white.opacity(0.9))
+                            .fill(Color.white.opacity(0.85))
                             .frame(width: 64, height: 64)
                             .shadow(color: Color.black.opacity(0.05), radius: 10, x: 0, y: 5)
                         
@@ -83,23 +86,25 @@ struct DemoContentView: View {
                             .foregroundColor(Color(red: 0.18, green: 0.18, blue: 0.18))
                     }
                     
-                    VStack(spacing: 10) {
+                    VStack(spacing: 12) {
                         Text("Add your resume and links")
                             .font(.system(size: 20, weight: .bold))
                             .foregroundColor(Color(red: 0.18, green: 0.18, blue: 0.18))
+                            .multilineTextAlignment(.center)
                         
                         Text("FloSpace keeps them ready to use whenever you apply.")
                             .font(.system(size: 14, weight: .medium))
                             .multilineTextAlignment(.center)
                             .foregroundColor(Color(red: 0.31, green: 0.31, blue: 0.31))
                             .lineSpacing(4)
-                            .padding(.horizontal, 28)
+                            .padding(.horizontal, 20)
                     }
                 }
+                .frame(maxWidth: .infinity)
                 
-                Spacer()
+                Spacer() // Elastic spacing adapts to fill tall mobile screens smoothly
                 
-                // Bottom Floating Pill CTA Node with Right Arrow
+                // Bottom Responsive CTA Pill Button Layout
                 HStack(alignment: .center) {
                     Text("Get Started")
                         .font(.system(size: 15, weight: .semibold))
@@ -110,17 +115,15 @@ struct DemoContentView: View {
                         .foregroundColor(.white)
                 }
                 .padding(.horizontal, 24)
-                .padding(.vertical, 14)
-                .frame(width: 320, alignment: .center)
+                .padding(.vertical, 16)
+                .frame(maxWidth: 340) // Keeps the navigation pill looking clean and proportional
                 .background(Color(red: 0.04, green: 0.04, blue: 0.04))
                 .cornerRadius(100)
-                .padding(.bottom, 44)
-                .shadow(color: Color.black.opacity(0.15), radius: 12, x: 0, y: 6)
+                .padding(.bottom, 16)
+                .shadow(color: Color.black.opacity(0.12), radius: 12, x: 0, y: 6)
             }
+            .padding(.vertical)
         }
-        .frame(width: 477, height: 803) // Preserves your exact Figma component boundaries
-        .cornerRadius(32)
-        .shadow(color: Color.black.opacity(0.12), radius: 30, x: 0, y: 15)
     }
 }
 
