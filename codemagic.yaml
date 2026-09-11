@@ -7,14 +7,27 @@ workflows:
       xcode: latest
       cocoapods: default
     scripts:
-      - name: Build iOS App
+      - name: Install Metal Toolchain
         script: |
-          xcodebuild -project DuoLikeAnimation.xcodeproj \
+          xcodebuild -downloadComponent MetalToolchain
+      - name: Build and Package App
+        script: |
+          # 1. Compile into an unsigned archive structure
+          xcodebuild archive \
+            -project DuoLikeAnimation.xcodeproj \
             -scheme DuoLikeAnimation \
             -destination 'generic/platform=iOS' \
-            -configuration Debug \
+            -archivePath $CM_BUILD_DIR/DuoLikeAnimation.xcarchive \
             CODE_SIGNING_ALLOWED=NO \
             CODE_SIGNING_REQUIRED=NO \
-            BUILD_DIR=$CM_BUILD_DIR/build
+            COMPILER_INDEX_STORE_ENABLE=NO
+
+          # 2. Re-structure it manually into an IPA format payload
+          mkdir -p $CM_BUILD_DIR/Payload
+          cp -r $CM_BUILD_DIR/DuoLikeAnimation.xcarchive/Products/Applications/DuoLikeAnimation.app $CM_BUILD_DIR/Payload/
+          
+          # 3. Zip it up as a clean installation file
+          cd $CM_BUILD_DIR
+          zip -r DuoLikeAnimation.ipa Payload
     artifacts:
-      - $CM_BUILD_DIR/build/Debug-iphoneos/*.app
+      - $CM_BUILD_DIR/*.ipa
