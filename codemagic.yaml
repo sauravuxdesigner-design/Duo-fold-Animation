@@ -12,9 +12,9 @@ workflows:
           xcodebuild -downloadComponent MetalToolchain
       - name: Native Automated iOS Compilation
         script: |
-          # Uses Codemagic's official tool to automatically locate paths and package a development build
+          # Corrected file layout properties and fixed the spelling typo
           xcode-project build-ipa \
-            -workspace DuoLikeAnimation.xcworkspace \
-            -scheme DuoLikeAnimation
+            --project DuoLikeAnimation.xcodeproj \
+            --scheme DuoLikeAnimation
     artifacts:
       - build/ios/ipa/*.ipa
