@@ -3,8 +3,8 @@ import SwiftUI
 struct DemoContentView: View {
     var body: some View {
         ZStack {
-            // 1. BASE BACKGROUND & FIGMA GRADIENT BLOB VECTORS
-            Color(red: 0.94, green: 0.94, blue: 0.96)
+            // 1. BASE BACKGROUND & YOUR FIGMA BLUR WALLPAPER
+            Color(red: 0.05, green: 0.05, blue: 0.07) // Sleek dark mode canvas
                 .ignoresSafeArea()
             
             GeometryReader { geo in
@@ -12,16 +12,16 @@ struct DemoContentView: View {
                     // Vector 14: Dark Teal/Cyan Blur Module
                     Circle()
                         .fill(Color(red: 0.0, green: 0.15, blue: 0.17))
-                        .frame(width: geo.size.width * 0.95, height: geo.size.height * 0.4)
-                        .blur(radius: 67)
-                        .offset(x: -geo.size.width * 0.22, y: geo.size.height * 0.22)
+                        .frame(width: geo.size.width * 1.1, height: geo.size.height * 0.45)
+                        .blur(radius: 75)
+                        .offset(x: -geo.size.width * 0.25, y: geo.size.height * 0.18)
                     
                     // Vector 13: Hot Pink/Crimson Blur Module
                     Circle()
                         .fill(Color(red: 1.0, green: 0.09, blue: 0.3))
-                        .frame(width: geo.size.width * 0.95, height: geo.size.height * 0.4)
-                        .blur(radius: 67)
-                        .offset(x: geo.size.width * 0.22, y: geo.size.height * 0.28)
+                        .frame(width: geo.size.width * 1.1, height: geo.size.height * 0.45)
+                        .blur(radius: 75)
+                        .offset(x: geo.size.width * 0.25, y: geo.size.height * 0.25)
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
             }
@@ -35,8 +35,8 @@ struct DemoContentView: View {
                             .resizable()
                             .aspectRatio(contentMode: .fill)
                             .frame(width: geometry.size.width, height: geometry.size.height)
-                            .opacity(0.45) // Subtle grain blend overlay matching your image asset
-                            .blendMode(.multiply)
+                            .opacity(0.35)
+                            .blendMode(.screen) // Blends cleanly into deep dark mode colors
                     default:
                         Color.clear
                     }
@@ -44,150 +44,165 @@ struct DemoContentView: View {
             }
             .ignoresSafeArea()
 
-            // 3. NATIVE iOS SYSTEM GRID INTERFACE
+            // 3. IPHONE 16 PRO SPECIFIC SYSTEM LAYER CONTAINER
             VStack(spacing: 0) {
                 
-                // APPLE iOS STATUS BAR
+                // IPHONE 16 PRO STATUS BAR (Spaced dynamically around the Dynamic Island)
                 HStack {
                     Text("9:41")
                         .font(.system(size: 15, weight: .semibold, design: .default))
-                        .foregroundColor(Color(red: 0.1, green: 0.1, blue: 0.1))
+                        .foregroundColor(.white)
+                        .frame(width: 60, alignment: .leading)
+                    
                     Spacer()
-                    HStack(spacing: 5) {
+                    
+                    // Fixed spacing layout to leave room for the physical Dynamic Island hardware cutout
+                    Spacer()
+                        .frame(width: 110)
+                    
+                    Spacer()
+                    
+                    HStack(spacing: 6) {
                         Image(systemName: "cellularbars")
                         Image(systemName: "wifi")
                         Image(systemName: "battery.100")
                     }
-                    .font(.system(size: 13, weight: .medium))
-                    .foregroundColor(Color(red: 0.1, green: 0.1, blue: 0.1))
+                    .font(.system(size: 12, weight: .semibold))
+                    .foregroundColor(.white)
+                    .frame(width: 60, alignment: .trailing)
                 }
-                .padding(.horizontal, 32)
-                .padding(.top, 14)
+                .padding(.horizontal, 24)
+                .padding(.top, 16)
                 
-                // HOME SCREEN MAIN GRID WORKSPACE
-                VStack(spacing: 28) {
+                // RESPONSIVE SYSTEM APP & WIDGET WORKSPACE GRID
+                VStack(spacing: 32) {
                     
-                    // NATIVE 2x4 LARGE SYSTEM WIDGET (Media / Music Player Style)
+                    // 2x4 LARGE SYSTEM METRIC WIDGET (FloSpace Core Panel Look)
                     HStack(spacing: 16) {
                         VStack(alignment: .leading, spacing: 4) {
                             Text("NOW PLAYING")
                                 .font(.system(size: 10, weight: .bold))
-                                .foregroundColor(.secondary)
+                                .foregroundColor(.white.opacity(0.5))
                             Text("FloSpace Canvas")
                                 .font(.system(size: 16, weight: .bold))
-                                .foregroundColor(Color(red: 0.15, green: 0.15, blue: 0.15))
+                                .foregroundColor(.white)
                             Text("Design System Sync")
                                 .font(.system(size: 13, weight: .medium))
-                                .foregroundColor(.secondary)
+                                .foregroundColor(.white.opacity(0.6))
                             Spacer()
-                            HStack(spacing: 14) {
+                            HStack(spacing: 16) {
                                 Image(systemName: "backward.fill")
                                 Image(systemName: "play.fill").font(.system(size: 18))
                                 Image(systemName: "forward.fill")
                             }
-                            .foregroundColor(Color(red: 0.15, green: 0.15, blue: 0.15))
+                            .foregroundColor(.white)
                         }
                         Spacer()
                         
-                        // Album Art Vector Container with Soft Vignette
                         RoundedRectangle(cornerRadius: 16, style: .continuous)
-                            .fill(LinearGradient(colors: [.purple, .indigo], startPoint: .top, endPoint: .bottom))
+                            .fill(LinearGradient(colors: [.purple, .pink], startPoint: .top, endPoint: .bottom))
                             .frame(width: 64, height: 64)
-                            .overlay(Image(systemName: "music.note").foregroundColor(.white).font(.title3))
-                            .shadow(color: Color.purple.opacity(0.15), radius: 6, x: 0, y: 3)
+                            .overlay(Image(systemName: "sparkles").foregroundColor(.white).font(.title3))
                     }
                     .padding(16)
                     .frame(maxWidth: .infinity)
                     .frame(height: 140)
-                    .background(Color.white.opacity(0.45)) // Frosted translucent canvas core
-                    .cornerRadius(24, style: .continuous) // Squircle corner profile
-                    .shadow(color: Color.black.opacity(0.03), radius: 10, x: 0, y: 4)
+                    .background(Color.white.opacity(0.12)) // Dark mode material translucency
+                    .cornerRadius(24, style: .continuous) // Squircle profile
+                    .overlay(RoundedRectangle(cornerRadius: 24, style: .continuous).stroke(Color.white.opacity(0.08), lineWidth: 0.5))
                     
-                    // APP INTERFACE VECTOR GRID (60x60 Standard Squircles)
-                    VStack(spacing: 24) {
+                    // MODERN APP INTERFACE GRID (Clean matching dark-themed squircle rows)
+                    VStack(spacing: 26) {
                         // ROW 1
-                        HStack(spacing: 26) {
-                            IOSIconComponent(name: "Messages", symbol: "message.fill", themeColor: .green)
-                            IOSIconComponent(name: "Photos", symbol: "photo.on.rectangle.angled", themeColor: .blue)
-                            IOSIconComponent(name: "Figma", symbol: "pencil.tip.crop.circle", themeColor: .purple)
-                            IOSIconComponent(name: "Safari", symbol: "compass.drawing", themeColor: .cyan)
+                        HStack(spacing: 24) {
+                            ProIconComponent(name: "Messages", symbol: "message.fill", tintColor: .green)
+                            ProIconComponent(name: "Photos", symbol: "photo.on.rectangle.angled", tintColor: .blue)
+                            ProIconComponent(name: "Figma", symbol: "pencil.tip.crop.circle", tintColor: .purple)
+                            ProIconComponent(name: "Safari", symbol: "compass.drawing", tintColor: .cyan)
                         }
                         
                         // ROW 2
-                        HStack(spacing: 26) {
-                            IOSIconComponent(name: "Maps", symbol: "map.fill", themeColor: .orange)
-                            IOSIconComponent(name: "Files", symbol: "folder.fill", themeColor: .blue)
-                            IOSIconComponent(name: "Settings", symbol: "gearshape.fill", themeColor: .gray)
-                            IOSIconComponent(name: "App Store", symbol: "a.square.fill", themeColor: .blue)
+                        HStack(spacing: 24) {
+                            ProIconComponent(name: "Maps", symbol: "map.fill", tintColor: .orange)
+                            ProIconComponent(name: "Files", symbol: "folder.fill", tintColor: .blue)
+                            ProIconComponent(name: "Settings", symbol: "gearshape.fill", tintColor: .gray)
+                            ProIconComponent(name: "App Store", symbol: "a.square.fill", tintColor: .indigo)
                         }
                     }
-                    .padding(.horizontal, 4)
                 }
-                .padding(.horizontal, 24)
-                .padding(.top, 32)
-                
-                Spacer() // Pushes the dock block to the lower device boundaries smoothly
-                
-                // APPLE BOTTOM BLURRED APP DOCK ROW REPLICA (Ultra-Thin Material Blur Look)
-                HStack(spacing: 26) {
-                    DockIconComponent(symbol: "phone.fill", themeColor: .green)
-                    DockIconComponent(symbol: "envelope.fill", themeColor: .blue)
-                    DockIconComponent(symbol: "safari.fill", themeColor: .cyan)
-                    DockIconComponent(symbol: "music.note", themeColor: .pink)
-                }
-                .padding(.horizontal, 24)
-                .padding(.vertical, 18)
-                .frame(maxWidth: .infinity)
-                .background(RoundedRectangle(cornerRadius: 36, style: .continuous).fill(Color.white.opacity(0.35)))
                 .padding(.horizontal, 20)
+                .padding(.top, 36)
+                
+                Spacer() // Elastic spacer matches thin iPhone 16 Pro layout bounds perfectly
+                
+                // BOTTOM FLOATING APP DOCK BAR (Clean Dark Glass Material)
+                HStack(spacing: 24) {
+                    ProDockComponent(symbol: "phone.fill", tintColor: .green)
+                    ProDockComponent(symbol: "envelope.fill", tintColor: .blue)
+                    ProDockComponent(symbol: "safari.fill", tintColor: .cyan)
+                    ProDockComponent(symbol: "music.note", tintColor: .pink)
+                }
+                .padding(.horizontal, 24)
+                .padding(.vertical, 16)
+                .frame(maxWidth: .infinity)
+                .background(RoundedRectangle(cornerRadius: 36, style: .continuous).fill(Color.white.opacity(0.14)))
+                .overlay(RoundedRectangle(cornerRadius: 36, style: .continuous).stroke(Color.white.opacity(0.08), lineWidth: 0.5))
+                .padding(.horizontal, 16)
                 .padding(.bottom, 24)
-                .shadow(color: Color.black.opacity(0.04), radius: 20, x: 0, y: 8)
             }
         }
     }
 }
 
-// Custom App Icon Squircles
-struct IOSIconComponent: View {
+// iPhone 16 Pro Grid Icon Layout System
+struct ProIconComponent: View {
     let name: String
     let symbol: String
-    let themeColor: Color
+    let tintColor: Color
     
     var body: some View {
         VStack(spacing: 6) {
             ZStack {
+                // Generates the dark-tinted monochrome style look option
                 RoundedRectangle(cornerRadius: 15, style: .continuous)
-                    .fill(themeColor.gradient)
-                    .frame(width: 60, height: 60)
-                    .shadow(color: Color.black.opacity(0.04), radius: 5, x: 0, y: 3)
+                    .fill(Color(red: 0.15, green: 0.15, blue: 0.18))
+                    .frame(width: 62, height: 62)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 15, style: .continuous)
+                            .stroke(Color.white.opacity(0.06), lineWidth: 0.5)
+                    )
                 
                 Image(systemName: symbol)
                     .font(.system(size: 26, weight: .medium))
-                    .foregroundColor(.white)
+                    .foregroundStyle(tintColor.gradient) // Colored glyph branding accent
             }
             Text(name)
                 .font(.system(size: 11, weight: .medium))
-                .foregroundColor(Color(red: 0.12, green: 0.12, blue: 0.12))
+                .foregroundColor(.white.opacity(0.8))
                 .lineLimit(1)
         }
         .frame(maxWidth: .infinity)
     }
 }
 
-// Custom Dock Icon Component
-struct DockIconComponent: View {
+// iPhone 16 Pro Bottom App Dock Layout System
+struct ProDockComponent: View {
     let symbol: String
-    let themeColor: Color
+    let tintColor: Color
     
     var body: some View {
         ZStack {
             RoundedRectangle(cornerRadius: 15, style: .continuous)
-                .fill(themeColor.gradient)
-                .frame(width: 60, height: 60)
+                .fill(Color(red: 0.18, green: 0.18, blue: 0.22))
+                .frame(width: 62, height: 62)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 15, style: .continuous)
+                        .stroke(Color.white.opacity(0.06), lineWidth: 0.5)
+                )
             
             Image(systemName: symbol)
                 .font(.system(size: 26, weight: .medium))
-                .foregroundColor(.white)
+                .foregroundStyle(tintColor.gradient)
         }
         .frame(maxWidth: .infinity)
     }
