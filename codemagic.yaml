@@ -1,38 +1,28 @@
-workflows:
-  ios-device-build:
-    name: iOS Device Build
-    max_build_duration: 30
-    instance_type: mac_mini_m2
-    environment:
-      xcode: latest
-      cocoapods: default
-    scripts:
-      - name: Preload Metal Toolchain Components
-        script: |
-          xcodebuild -downloadComponent MetalToolchain
-      - name: Build and Package App
-        script: |
-          # 1. Force a clean compile directly targeting physical iPhone architecture
-          xcodebuild build \
-            -project DuoLikeAnimation.xcodeproj \
-            -scheme DuoLikeAnimation \
-            -destination 'generic/platform=iOS' \
-            -configuration Debug \
-            CODE_SIGNING_ALLOWED=YES \
-            CODE_SIGNING_REQUIRED=NO \
-            CODE_SIGNING_IDENTITY="" \
-            PROVISIONING_PROFILE_REQUIRED=NO \
-            BUILD_DIR=$CM_BUILD_DIR/build
+scripts:
+  - name: Preload Metal Toolchain Components
+    script: xcodebuild -downloadComponent MetalToolchain
 
-          # 2. Build explicit standard Payload folder structure
-          rm -rf $CM_BUILD_DIR/Payload
-          mkdir -p $CM_BUILD_DIR/Payload
-          
-          # 3. Copy the compiled application bundle into the Payload folder
-          cp -r $CM_BUILD_DIR/build/Debug-iphoneos/DuoLikeAnimation.app $CM_BUILD_DIR/Payload/
-          
-          # 4. Zip the Payload folder directly into a pristine IPA package
-          cd $CM_BUILD_DIR
-          zip -r DuoLikeAnimation.ipa Payload
-    artifacts:
-      - $CM_BUILD_DIR/DuoLikeAnimation.ipa
+  - name: Build and Package App
+    script: |
+      set -euo pipefail   # ← fail loudly instead of shipping empty artifacts
+
+      xcodebuild build \
+        -project DuoLikeAnimation.xcodeproj \
+        -scheme DuoLikeAnimation \
+        -destination 'generic/platform=iOS' \
+        -configuration Debug \
+        CODE_SIGNING_ALLOWED=NO \
+        CODE_SIGN_IDENTITY="" \
+        CODE_SIGNING_REQUIRED=NO \
+        PROVISIONING_PROFILE_REQUIRED=NO \
+        BUILD_DIR=$CM_BUILD_DIR/build
+
+      APP_PATH="$CM_BUILD_DIR/build/Debug-iphoneos/DuoLikeAnimation.app"
+      test -d "$APP_PATH" || { echo "Build produced no .app — aborting"; exit 1; }
+
+      rm -rf $CM_BUILD_DIR/Payload
+      mkdir -p $CM_BUILD_DIR/Payload
+      cp -r "$APP_PATH" $CM_BUILD_DIR/Payload/
+
+      cd $CM_BUILD_DIR
+      zip -r DuoLikeAnimation.ipa Payload
