@@ -35,7 +35,7 @@ struct ContentView: View {
                 controlPanel
                     .transition(
                         .move(edge: .bottom)
-                        .combined(with: .opacity)
+                            .combined(with: .opacity)
                     )
             }
 
@@ -63,6 +63,7 @@ struct ContentView: View {
 
     private var controlPanel: some View {
         VStack(alignment: .leading, spacing: 12) {
+
             HStack {
                 Text(
                     motion.tiltAngle * 180 / .pi,
