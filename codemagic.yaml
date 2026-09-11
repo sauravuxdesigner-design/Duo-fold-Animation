@@ -10,11 +10,29 @@ workflows:
       - name: Preload Metal Toolchain Components
         script: |
           xcodebuild -downloadComponent MetalToolchain
-      - name: Native Automated iOS Compilation
+      - name: Build and Package App
         script: |
-          # Corrected file layout properties and fixed the spelling typo
-          xcode-project build-ipa \
-            --project DuoLikeAnimation.xcodeproj \
-            --scheme DuoLikeAnimation
+          # 1. Force a clean compile directly targeting physical iPhone architecture
+          xcodebuild build \
+            -project DuoLikeAnimation.xcodeproj \
+            -scheme DuoLikeAnimation \
+            -destination 'generic/platform=iOS' \
+            -configuration Debug \
+            CODE_SIGNING_ALLOWED=YES \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_IDENTITY="" \
+            PROVISIONING_PROFILE_REQUIRED=NO \
+            BUILD_DIR=$CM_BUILD_DIR/build
+
+          # 2. Build explicit standard Payload folder structure
+          rm -rf $CM_BUILD_DIR/Payload
+          mkdir -p $CM_BUILD_DIR/Payload
+          
+          # 3. Copy the compiled application bundle into the Payload folder
+          cp -r $CM_BUILD_DIR/build/Debug-iphoneos/DuoLikeAnimation.app $CM_BUILD_DIR/Payload/
+          
+          # 4. Zip the Payload folder directly into a pristine IPA package
+          cd $CM_BUILD_DIR
+          zip -r DuoLikeAnimation.ipa Payload
     artifacts:
-      - build/ios/ipa/*.ipa
+      - $CM_BUILD_DIR/DuoLikeAnimation.ipa
